@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="汉西英三语在线词典第0阶段交互原型">
+  <title>言桥术语 · 汉西英三语词典原型</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="topbar">
+    <button class="brand" type="button" data-view="home" aria-label="返回首页">
+      <span class="brand-mark" aria-hidden="true">言</span>
+      <span><strong>言桥术语</strong><small>汉 · 西 · 英</small></span>
+    </button>
+    <nav aria-label="原型页面">
+      <button type="button" data-view="home" class="nav-active">首页</button>
+      <button type="button" data-view="results">搜索结果</button>
+      <button type="button" data-view="detail">概念详情</button>
+      <button type="button" data-view="editor">管理端</button>
+      <button type="button" data-view="mobile">移动端</button>
+    </nav>
+    <button class="account" type="button">登录</button>
+  </header>
+
+  <main id="main">
+    <section class="view view-active home-view" data-view-panel="home" aria-labelledby="home-title">
+      <div class="hero">
+        <p class="eyebrow">专业术语，一次查询，三语贯通</p>
+        <h1 id="home-title">从一个词，找到完整概念</h1>
+        <p class="hero-copy">查询中文、西班牙语或英语术语，查看规范译名、专业定义、来源与知识关联。</p>
+        <form class="search-shell" data-search-form>
+          <label class="sr-only" for="home-query">输入术语</label>
+          <select aria-label="查询语言" name="language">
+            <option value="auto">自动识别</option>
+            <option value="zh-Hans">中文</option>
+            <option value="es">Español</option>
+            <option value="en">English</option>
+          </select>
+          <input id="home-query" name="query" autocomplete="off" value="人工智能" placeholder="输入术语，例如 inteligencia artificial">
+          <button class="voice-button" type="button" data-voice aria-label="语音查询">麦克风</button>
+          <button class="primary-button" type="submit">查询</button>
+        </form>
+        <div class="suggestions" aria-label="热门查询">
+          <span>试试：</span>
+          <button type="button" data-query="机器学习">机器学习</button>
+          <button type="button" data-query="cadena de suministro">cadena de suministro</button>
+          <button type="button" data-query="open access">open access</button>
+        </div>
+      </div>
+      <div class="domain-grid" aria-label="热门领域">
+        <article><span>ECON</span><h2>经贸</h2><p>国际贸易、金融、供应链与电子商务</p></article>
+        <article><span>IT</span><h2>信息技术</h2><p>人工智能、软件工程、数据与网络安全</p></article>
+        <article><span>RES</span><h2>科研教育</h2><p>研究方法、统计、学术出版与教育</p></article>
+        <article><span>CUL</span><h2>文化交流</h2><p>翻译、传媒、文化遗产与跨文化交际</p></article>
+      </div>
+      <div class="trust-strip">
+        <div><strong>概念导向</strong><span>避免逐词误译</span></div>
+        <div><strong>来源可追溯</strong><span>保留标准和文献证据</span></div>
+        <div><strong>专家审核</strong><span>发布内容具备修订记录</span></div>
+      </div>
+    </section>
+
+    <section class="view results-view" data-view-panel="results" aria-labelledby="results-title">
+      <div class="page-head">
+        <div><p class="eyebrow">搜索结果</p><h1 id="results-title">“人工智能”的概念匹配</h1></div>
+        <form class="compact-search" data-search-form>
+          <label class="sr-only" for="result-query">修改查询</label>
+          <input id="result-query" name="query" value="人工智能">
+          <button class="primary-button" type="submit">查询</button>
+        </form>
+      </div>
+      <div class="search-context"><span>识别语言：中文</span><span>找到 2 个概念</span><span>用时 86 ms</span></div>
+      <div class="result-layout">
+        <aside class="filters" aria-label="筛选结果">
+          <h2>筛选</h2>
+          <fieldset><legend>领域</legend><label><input type="checkbox" checked> 信息技术 <span>2</span></label><label><input type="checkbox"> 科研教育 <span>1</span></label></fieldset>
+          <fieldset><legend>术语类型</legend><label><input type="checkbox" checked> 首选术语</label><label><input type="checkbox"> 缩略语</label><label><input type="checkbox"> 变体</label></fieldset>
+          <button class="text-button" type="button">清除筛选</button>
+        </aside>
+        <div class="result-list" id="result-list" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="view detail-view" data-view-panel="detail" aria-labelledby="detail-title">
+      <div class="breadcrumb">信息技术 / 人工智能 / IT-000001</div>
+      <div class="detail-hero">
+        <div><div class="status-row"><span class="status authoritative">权威来源</span><span>名词</span><span>版本 3</span></div><h1 id="detail-title">人工智能</h1><p>inteligencia artificial · artificial intelligence</p></div>
+        <div class="detail-actions"><button type="button">播放发音</button><button type="button">收藏</button><button type="button">分享</button></div>
+      </div>
+      <div class="detail-grid">
+        <article class="content-card term-card">
+          <h2>三语术语</h2>
+          <dl>
+            <div><dt>中文 <span>首选</span></dt><dd>人工智能</dd></div>
+            <div><dt>Español <span>preferido</span></dt><dd>inteligencia artificial <small>f.</small></dd></div>
+            <div><dt>English <span>preferred</span></dt><dd>artificial intelligence <small>AI</small></dd></div>
+          </dl>
+        </article>
+        <article class="content-card definition-card">
+          <h2>定义</h2>
+          <div class="language-block"><strong>中文</strong><p>研究和构建能够执行通常需要人类智能的任务之计算系统的领域及相关技术。</p></div>
+          <div class="language-block"><strong>Español</strong><p>Campo y conjunto de técnicas para crear sistemas informáticos capaces de realizar tareas que normalmente requieren inteligencia humana.</p></div>
+          <div class="language-block"><strong>English</strong><p>A field and set of techniques for building computer systems that perform tasks normally requiring human intelligence.</p></div>
+          <p class="source-line">来源示例：项目自编定义，待领域专家复核</p>
+        </article>
+        <article class="content-card example-card">
+          <h2>例句</h2>
+          <p>人工智能正在改变专业术语的发现与管理方式。</p>
+          <p>La inteligencia artificial está cambiando la forma de descubrir y gestionar la terminología especializada.</p>
+          <p>Artificial intelligence is changing how specialized terminology is discovered and managed.</p>
+        </article>
+        <aside class="content-card relation-card">
+          <h2>知识关联</h2>
+          <div><span>上位概念</span><button type="button">计算机科学</button></div>
+          <div><span>下位概念</span><button type="button">机器学习</button><button type="button">自然语言处理</button></div>
+          <div><span>相关概念</span><button type="button">算法</button><button type="button">数据集</button></div>
+        </aside>
+      </div>
+      <button class="feedback-link" type="button">发现术语或定义问题？提交纠错建议</button>
+    </section>
+
+    <section class="view editor-view" data-view-panel="editor" aria-labelledby="editor-title">
+      <div class="admin-shell">
+        <aside class="admin-nav"><strong>术语运营台</strong><button class="active" type="button">概念编辑</button><button type="button">待审核</button><button type="button">导入任务</button><button type="button">质量报告</button><button type="button">领域与来源</button></aside>
+        <div class="editor-main">
+          <div class="editor-head"><div><p class="eyebrow">草稿 · IT-000001</p><h1 id="editor-title">编辑概念</h1></div><div><button type="button">保存草稿</button><button class="primary-button" type="button">提交审核</button></div></div>
+          <div class="quality-banner"><strong>质量检查 8/10</strong><span>缺少西班牙语音频；英语定义来源待复核</span></div>
+          <form class="editor-form">
+            <div class="form-row"><label>主领域<select><option>IT.01 人工智能</option></select></label><label>可靠等级<select><option>ExpertReviewed</option><option>CorpusSupported</option></select></label></div>
+            <div class="language-tabs" role="tablist"><button class="active" type="button" data-language-tab="zh">中文</button><button type="button" data-language-tab="es">Español</button><button type="button" data-language-tab="en">English</button></div>
+            <div class="language-panel panel-active" data-language-panel="zh"><label>首选术语<input value="人工智能"></label><label>定义<textarea rows="4">研究和构建能够执行通常需要人类智能的任务之计算系统的领域及相关技术。</textarea></label><div class="form-row"><label>词性<select><option>名词</option></select></label><label>术语类型<select><option>Preferred</option></select></label></div></div>
+            <div class="language-panel" data-language-panel="es"><label>Término preferido<input value="inteligencia artificial"></label><label>Definición<textarea rows="4">Campo y conjunto de técnicas para crear sistemas informáticos capaces de realizar tareas que normalmente requieren inteligencia humana.</textarea></label><div class="form-row"><label>Género<select><option>feminine</option></select></label><label>Región<input value="通用"></label></div></div>
+            <div class="language-panel" data-language-panel="en"><label>Preferred term<input value="artificial intelligence"></label><label>Definition<textarea rows="4">A field and set of techniques for building computer systems that perform tasks normally requiring human intelligence.</textarea></label><div class="form-row"><label>Abbreviation<input value="AI"></label><label>Region<input value="General"></label></div></div>
+            <div class="form-section"><div><h2>来源</h2><p>发布前至少需要一项可定位来源。</p></div><button type="button">添加来源</button></div>
+            <div class="source-item"><span>ISO/IEC 22989 — Artificial intelligence concepts and terminology</span><button type="button">编辑</button></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="view mobile-view" data-view-panel="mobile" aria-labelledby="mobile-title">
+      <div class="mobile-copy"><p class="eyebrow">UniApp 核心路径</p><h1 id="mobile-title">移动端查询预览</h1><p>强调单手输入、语音入口、三语结果和详情层级。正式应用将复用后端 API 与术语规则。</p><ul><li>底部导航固定展示搜索、收藏、历史和我的。</li><li>语音识别文本必须可编辑确认。</li><li>详情优先显示三语首选词和第一条定义。</li></ul></div>
+      <div class="phone-frame" aria-label="手机界面预览">
+        <div class="phone-status"><span>9:41</span><span>5G · 100%</span></div>
+        <div class="phone-header"><strong>言桥术语</strong><button type="button">中</button></div>
+        <form class="phone-search" data-search-form><input name="query" value="inteligencia artificial" aria-label="手机端查询"><button type="submit">搜索</button></form>
+        <button class="phone-voice" type="button" data-voice><span>麦克风</span>按住说话，最长 15 秒</button>
+        <div class="phone-result"><small>精确匹配 · IT.01</small><h2>人工智能</h2><p>inteligencia artificial</p><p>artificial intelligence</p><button type="button" data-view="detail">查看定义与关联</button></div>
+        <nav class="phone-tabs" aria-label="移动端主导航"><button class="active" type="button">搜索</button><button type="button">收藏</button><button type="button">历史</button><button type="button">我的</button></nav>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="voice-dialog"><h2>语音查询原型</h2><p>正式版本会先请求麦克风权限，再把最长 15 秒的录音提交到服务端识别。低置信度文本需要用户确认。</p><div class="voice-state"><span aria-hidden="true"></span>正在聆听中文 / Español / English</div><form method="dialog"><button class="primary-button">结束演示</button></form></dialog>
+  <div class="prototype-note">第 0 阶段交互原型 · 示例内容尚待术语专家复核</div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\TriDict.Application.Contracts\TriDict.Application.Contracts.csproj" />
+    <ProjectReference Include="..\TriDict.Domain\TriDict.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Ddd.Application" />
+  </ItemGroup>
+
+</Project>

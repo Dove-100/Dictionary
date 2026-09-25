@@ -1,0 +1,8 @@
+.git
+.tools
+.tmp
+**/bin
+**/obj
+TestResults
+outputs
+prototype

@@ -1,0 +1,33 @@
+name: backend-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.401
+          cache: true
+          cache-dependency-path: "**/*.csproj"
+      - name: Restore
+        run: dotnet restore TriDict.sln
+      - name: Build
+        run: dotnet build TriDict.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test TriDict.sln --configuration Release --no-build --logger trx --results-directory TestResults
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults

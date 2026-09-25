@@ -1,0 +1,73 @@
+name: tridict
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tridict}
+      POSTGRES_USER: ${POSTGRES_USER:-tridict}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tridict_dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tridict} -d ${POSTGRES_DB:-tridict}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:8.2-alpine
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  migrator:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      target: migrator
+    environment:
+      TRIDICT_CONNECTION_STRING: Host=postgres;Port=5432;Database=${POSTGRES_DB:-tridict};Username=${POSTGRES_USER:-tridict};Password=${POSTGRES_PASSWORD:-tridict_dev}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      target: api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Default: Host=postgres;Port=5432;Database=${POSTGRES_DB:-tridict};Username=${POSTGRES_USER:-tridict};Password=${POSTGRES_PASSWORD:-tridict_dev}
+      Authentication__Authority: ${JWT_AUTHORITY:-https://localhost:44300}
+      Authentication__Audience: ${JWT_AUDIENCE:-TriDict}
+      Authentication__RequireHttpsMetadata: "false"
+    ports:
+      - "8080:8080"
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+
+  opensearch:
+    image: opensearchproject/opensearch:3.2.0
+    profiles: ["search"]
+    environment:
+      discovery.type: single-node
+      plugins.security.disabled: "true"
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+
+volumes:
+  postgres-data:
+  redis-data:
+  opensearch-data:

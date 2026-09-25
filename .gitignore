@@ -1,0 +1,25 @@
+# Build output
+**/bin/
+**/obj/
+TestResults/
+coverage/
+
+# Local SDK and tools
+.tools/
+.tmp/
+.config/dotnet-tools.json
+
+# Local environment and secrets
+.env
+*.user
+*.suo
+appsettings.Local.json
+
+# IDE
+.vs/
+.idea/
+.vscode/
+
+# Runtime data
+deploy/data/
+*.log

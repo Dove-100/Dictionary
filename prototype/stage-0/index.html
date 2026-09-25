@@ -18,6 +18,7 @@
       <button type="button" data-view="home" class="nav-active">首页</button>
       <button type="button" data-view="results">搜索结果</button>
       <button type="button" data-view="detail">概念详情</button>
+      <button type="button" data-view="polysemy">多义词</button>
       <button type="button" data-view="editor">管理端</button>
       <button type="button" data-view="mobile">移动端</button>
     </nav>
@@ -47,6 +48,7 @@
           <button type="button" data-query="机器学习">机器学习</button>
           <button type="button" data-query="cadena de suministro">cadena de suministro</button>
           <button type="button" data-query="open access">open access</button>
+          <button type="button" data-view="polysemy">modelo（多义词）</button>
         </div>
       </div>
       <div class="domain-grid" aria-label="热门领域">
@@ -119,6 +121,63 @@
         </aside>
       </div>
       <button class="feedback-link" type="button">发现术语或定义问题？提交纠错建议</button>
+    </section>
+
+    <section class="view polysemy-view" data-view-panel="polysemy" aria-labelledby="polysemy-title">
+      <div class="dictionary-search-bar">
+        <form class="compact-search" data-search-form>
+          <label class="sr-only" for="poly-query">继续查词</label>
+          <input id="poly-query" name="query" value="modelo">
+          <button class="primary-button" type="submit">查询</button>
+        </form>
+      </div>
+      <div class="word-layout">
+        <aside class="sense-nav" aria-label="义项导航">
+          <strong>义项导航</strong>
+          <a href="#sense-1"><span>1</span>科研与计算</a>
+          <a href="#sense-2"><span>2</span>工业产品</a>
+          <a href="#sense-3"><span>3</span>时尚与展示</a>
+          <div class="sense-tip">同一词形的不同意义对应独立概念，不共享定义。</div>
+        </aside>
+        <div class="word-main">
+          <header class="headword-card">
+            <div>
+              <p class="eyebrow">Español · sustantivo masculino</p>
+              <h1 id="polysemy-title">modelo</h1>
+              <div class="pronunciation"><button type="button">播放</button><span>/moˈðelo/</span></div>
+            </div>
+            <div class="headword-actions"><button type="button">收藏词头</button><button type="button">复制</button><button type="button">反馈</button></div>
+          </header>
+
+          <div class="sense-summary"><strong>3 个义项</strong><span>已按领域与使用场景拆分</span></div>
+
+          <article class="sense-card" id="sense-1">
+            <div class="sense-heading"><span class="sense-number">1</span><div><p>RES.01 科研方法 · IT.01 人工智能</p><h2>科研与计算中的抽象表示</h2></div><span class="reviewed">专家审核</span></div>
+            <div class="sense-terms"><div><small>中文</small><strong>模型</strong></div><div><small>Español</small><strong>modelo</strong></div><div><small>English</small><strong>model</strong></div></div>
+            <p class="sense-definition">为描述、解释、预测或计算某一对象、系统或过程而建立的简化表示。</p>
+            <div class="sense-example"><strong>场景例句</strong><p>El equipo entrenó un modelo lingüístico con un corpus especializado.</p><p>团队使用专业语料库训练了一个语言模型。</p></div>
+            <div class="sense-footer"><span>相关：数学模型、语言模型、参数</span><button type="button">查看概念 RES-000101</button></div>
+          </article>
+
+          <article class="sense-card" id="sense-2">
+            <div class="sense-heading"><span class="sense-number">2</span><div><p>RES.04 工程技术 · ECON.04 市场营销</p><h2>产品的型号或款式</h2></div><span class="reviewed">专家审核</span></div>
+            <div class="sense-terms"><div><small>中文</small><strong>型号</strong></div><div><small>Español</small><strong>modelo</strong></div><div><small>English</small><strong>model</strong></div></div>
+            <p class="sense-definition">同一类产品中由设计、配置或生产批次等特征区分的具体类型。</p>
+            <div class="sense-example"><strong>场景例句</strong><p>Este modelo incorpora un sensor de mayor precisión.</p><p>这一型号配备了精度更高的传感器。</p></div>
+            <div class="sense-footer"><span>相关：产品系列、规格、配置</span><button type="button">查看概念 RES-000102</button></div>
+          </article>
+
+          <article class="sense-card" id="sense-3">
+            <div class="sense-heading"><span class="sense-number">3</span><div><p>CUL.08 创意产业 · 时尚展示</p><h2>展示服装或产品的人</h2></div><span class="reviewed">专家审核</span></div>
+            <div class="sense-terms"><div><small>中文</small><strong>模特</strong></div><div><small>Español</small><strong>modelo</strong></div><div><small>English</small><strong>model</strong></div></div>
+            <p class="sense-definition">受聘通过穿着、姿态或演示来展示服装、饰品或其他产品的人。</p>
+            <div class="sense-example"><strong>场景例句</strong><p>La modelo presentó la nueva colección durante el evento.</p><p>模特在活动中展示了新系列。</p></div>
+            <div class="sense-footer"><span>相关：时装展示、造型、创意产业</span><button type="button">查看概念 CUL-000103</button></div>
+          </article>
+
+          <section class="phrase-card"><h2>短语与搭配</h2><div><button type="button">modelo de datos <span>数据模型</span></button><button type="button">modelo de negocio <span>商业模式</span></button><button type="button">nuevo modelo <span>新型号</span></button></div></section>
+        </div>
+      </div>
     </section>
 
     <section class="view editor-view" data-view-panel="editor" aria-labelledby="editor-title">

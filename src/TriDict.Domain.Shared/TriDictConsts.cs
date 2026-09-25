@@ -9,4 +9,9 @@ public static class TriDictConsts
     public const int MaxTermLength = 512;
     public const int MaxContextLength = 256;
     public const int MaxDefinitionLength = 4000;
+    public const int MaxTitleLength = 512;
+    public const int MaxUrlLength = 2048;
+    public const int MaxLicenseLength = 256;
+    public const int MaxCommentLength = 2000;
+    public const int MaxFileNameLength = 260;
 }

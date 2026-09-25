@@ -1,5 +1,6 @@
 using Volo.Abp;
 using Volo.Abp.Domain.Entities.Auditing;
+using TriDict.Workflow;
 
 namespace TriDict.Terminology;
 
@@ -7,6 +8,7 @@ public sealed class Concept : FullAuditedAggregateRoot<Guid>
 {
     private readonly List<Term> _terms = [];
     private readonly List<Definition> _definitions = [];
+    private readonly List<ConceptSource> _sources = [];
 
     public string ConceptCode { get; private set; } = string.Empty;
     public Guid DomainId { get; private set; }
@@ -16,6 +18,7 @@ public sealed class Concept : FullAuditedAggregateRoot<Guid>
     public int CurrentVersion { get; private set; }
     public IReadOnlyCollection<Term> Terms => _terms;
     public IReadOnlyCollection<Definition> Definitions => _definitions;
+    public IReadOnlyCollection<ConceptSource> Sources => _sources;
 
     private Concept()
     {
@@ -28,7 +31,7 @@ public sealed class Concept : FullAuditedAggregateRoot<Guid>
         DomainId = domainId;
         Status = PublicationStatus.Draft;
         ReliabilityCode = ReliabilityCode.Unverified;
-        CurrentVersion = 1;
+        CurrentVersion = 0;
     }
 
     public Concept(Guid id, string conceptCode, DomainCategory domain)
@@ -99,6 +102,22 @@ public sealed class Concept : FullAuditedAggregateRoot<Guid>
         return definition;
     }
 
+    public ConceptSource AddSource(
+        Guid conceptSourceId,
+        Guid sourceId,
+        EvidenceType evidenceType = EvidenceType.General,
+        string? locator = null)
+    {
+        if (_sources.Any(x => x.SourceId == sourceId && x.EvidenceType == evidenceType))
+        {
+            throw new BusinessException("TriDict:DuplicateConceptSource");
+        }
+
+        var source = new ConceptSource(conceptSourceId, Id, sourceId, evidenceType, locator);
+        _sources.Add(source);
+        return source;
+    }
+
     public void SubmitForReview()
     {
         var requiredLanguages = new[] { "zh-Hans", "es", "en" };
@@ -110,6 +129,11 @@ public sealed class Concept : FullAuditedAggregateRoot<Guid>
         if (_definitions.Count == 0)
         {
             throw new BusinessException("TriDict:MissingDefinition");
+        }
+
+        if (_sources.Count == 0)
+        {
+            throw new BusinessException("TriDict:MissingSource");
         }
 
         Status = PublicationStatus.InReview;
@@ -124,7 +148,26 @@ public sealed class Concept : FullAuditedAggregateRoot<Guid>
 
         Status = PublicationStatus.Approved;
         ReliabilityCode = ReliabilityCode.ExpertReviewed;
-        CurrentVersion++;
+    }
+
+    public void Reject()
+    {
+        if (Status != PublicationStatus.InReview)
+        {
+            throw new BusinessException("TriDict:InvalidRejectionState");
+        }
+
+        Status = PublicationStatus.Rejected;
+    }
+
+    public void ReturnToDraft()
+    {
+        if (Status != PublicationStatus.Rejected)
+        {
+            throw new BusinessException("TriDict:InvalidDraftState");
+        }
+
+        Status = PublicationStatus.Draft;
     }
 
     public void Publish()
@@ -135,5 +178,70 @@ public sealed class Concept : FullAuditedAggregateRoot<Guid>
         }
 
         Status = PublicationStatus.Published;
+        CurrentVersion = Math.Max(CurrentVersion, 1);
+    }
+
+    public void ReplaceDraftContent(ConceptRevisionSnapshot snapshot)
+    {
+        if (Status is not PublicationStatus.Draft and not PublicationStatus.Rejected)
+        {
+            throw new BusinessException("TriDict:ConceptNotEditable");
+        }
+
+        ApplySnapshot(snapshot);
+        Status = PublicationStatus.Draft;
+    }
+
+    public void ApplyPublishedRevision(ConceptRevisionSnapshot snapshot, int version)
+    {
+        if (version <= CurrentVersion)
+        {
+            throw new BusinessException("TriDict:InvalidRevisionVersion");
+        }
+
+        snapshot.ValidateForReview();
+        ApplySnapshot(snapshot);
+        ReliabilityCode = ReliabilityCode.ExpertReviewed;
+        CurrentVersion = version;
+        Status = PublicationStatus.Published;
+    }
+
+    private void ApplySnapshot(ConceptRevisionSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        DomainId = snapshot.DomainId;
+        ReliabilityCode = snapshot.ReliabilityCode;
+        _terms.Clear();
+        _definitions.Clear();
+        _sources.Clear();
+
+        foreach (var term in snapshot.Terms)
+        {
+            AddTerm(
+                Guid.NewGuid(),
+                term.LanguageTag,
+                term.Text,
+                term.TermType,
+                term.PartOfSpeech,
+                term.IsPreferred,
+                term.SenseOrder,
+                term.UsageContext,
+                term.Region);
+        }
+
+        foreach (var definition in snapshot.Definitions)
+        {
+            AddDefinition(
+                Guid.NewGuid(),
+                definition.LanguageTag,
+                definition.Text,
+                definition.ScenarioLabel,
+                definition.SourceId);
+        }
+
+        foreach (var source in snapshot.Sources)
+        {
+            AddSource(Guid.NewGuid(), source.SourceId, source.EvidenceType, source.Locator);
+        }
     }
 }

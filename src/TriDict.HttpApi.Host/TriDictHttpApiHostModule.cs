@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TriDict.EntityFrameworkCore;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.AspNetCore.ExceptionHandling;
 using Volo.Abp.Modularity;
 
 namespace TriDict;
@@ -30,6 +32,10 @@ public sealed class TriDictHttpApiHostModule : AbpModule
         context.Services.AddAuthorization();
         context.Services.AddHealthChecks();
         context.Services.AddOpenApi("v1");
+        Configure<AbpExceptionHttpStatusCodeOptions>(options =>
+        {
+            options.Map("TriDict:RevisionConflict", HttpStatusCode.Conflict);
+        });
         context.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(policy => policy

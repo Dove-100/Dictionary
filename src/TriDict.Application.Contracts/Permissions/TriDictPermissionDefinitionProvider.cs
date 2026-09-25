@@ -12,5 +12,10 @@ public sealed class TriDictPermissionDefinitionProvider : PermissionDefinitionPr
         concepts.AddChild(TriDictPermissions.ConceptsEdit);
         concepts.AddChild(TriDictPermissions.ConceptsReview);
         concepts.AddChild(TriDictPermissions.ConceptsPublish);
+        var sources = group.AddPermission(TriDictPermissions.Sources);
+        sources.AddChild(TriDictPermissions.SourcesManage);
+        var imports = group.AddPermission(TriDictPermissions.Imports);
+        imports.AddChild(TriDictPermissions.ImportsExecute);
+        imports.AddChild(TriDictPermissions.ImportsView);
     }
 }

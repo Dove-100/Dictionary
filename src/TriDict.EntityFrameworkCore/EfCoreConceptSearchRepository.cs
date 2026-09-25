@@ -9,6 +9,20 @@ public sealed class EfCoreConceptSearchRepository(
     IDbContextProvider<TriDictDbContext> dbContextProvider)
     : EfCoreRepository<TriDictDbContext, Concept, Guid>(dbContextProvider), IConceptSearchRepository
 {
+    public async Task<Concept?> FindWithDetailsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var context = await GetDbContextAsync();
+        return await context.Concepts
+            .Include(x => x.Domain)
+            .Include(x => x.Terms)
+            .Include(x => x.Definitions)
+            .Include(x => x.Sources)
+            .AsSplitQuery()
+            .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
     public async Task<ConceptSearchPage> SearchAsync(
         string normalizedQuery,
         string? sourceLanguage,

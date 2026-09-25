@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-第 1 阶段技术底座已建立：模块化解决方案、术语核心模型、首个数据库迁移、JWT/OIDC 验证边界、查询 API、健康检查、OpenAPI 文档、Docker 开发环境和 CI。
+第 2 阶段后端业务闭环已建立：在第 1 阶段技术底座上增加术语草稿编辑、版本化审核发布、来源证据管理、CSV 批量导入与逐行错误报告，并通过 Outbox 记录发布事件。
 
 ## 本地开发
 
@@ -29,8 +29,12 @@ docker compose -f deploy/docker/compose.yml up --build
 - 健康检查：`GET http://localhost:8080/health`
 - 系统信息：`GET http://localhost:8080/api/v1/system/info`
 - 词典查询：`GET http://localhost:8080/api/v1/dictionary/search?query=modelo&sourceLanguage=es`
+- 术语草稿：`POST http://localhost:8080/api/v1/admin/concepts`
+- 修订审核：`POST http://localhost:8080/api/v1/admin/revisions/{id}/approve`
+- 来源管理：`GET http://localhost:8080/api/v1/admin/sources`
+- CSV 导入：`POST http://localhost:8080/api/v1/admin/import-jobs/csv`
 - OpenAPI：`GET http://localhost:8080/openapi/v1.json`
 
 数据库迁移由 `TriDict.DbMigrator` 独立执行，API 不会在启动时自动修改数据库结构。
 
-需要逐项了解新增文件用途时，请阅读[代码与文件职责说明](docs/phase-1/05-代码与文件职责说明.md)。
+第二阶段的交付范围和新增文件职责见[第 2 阶段交付物索引](docs/phase-2/00-阶段2交付物索引.md)与[代码与文件职责说明](docs/phase-2/03-代码与文件职责说明.md)。

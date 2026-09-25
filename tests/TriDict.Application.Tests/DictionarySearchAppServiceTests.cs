@@ -44,6 +44,7 @@ public sealed class DictionarySearchAppServiceTests
         concept.AddTerm(Guid.NewGuid(), "es", es, TermType.Preferred, "noun", true, senseOrder, usageContext);
         concept.AddTerm(Guid.NewGuid(), "en", en, TermType.Preferred, "noun", true, senseOrder, usageContext);
         concept.AddDefinition(Guid.NewGuid(), "zh-Hans", $"{usageContext}定义", usageContext);
+        concept.AddSource(Guid.NewGuid(), Guid.NewGuid(), EvidenceType.Definition, "test fixture");
         concept.SubmitForReview();
         concept.Approve();
         concept.Publish();

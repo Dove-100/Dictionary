@@ -4,6 +4,10 @@ namespace TriDict.Terminology;
 
 public interface IConceptSearchRepository : IRepository<Concept, Guid>
 {
+    Task<Concept?> FindWithDetailsAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
+
     Task<ConceptSearchPage> SearchAsync(
         string normalizedQuery,
         string? sourceLanguage,

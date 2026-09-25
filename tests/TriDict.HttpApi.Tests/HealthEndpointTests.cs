@@ -31,4 +31,14 @@ public sealed class HealthEndpointTests : IClassFixture<WebApplicationFactory<Pr
         var payload = await _client.GetStringAsync("/openapi/v1.json");
         Assert.Contains("/api/v1/dictionary/search", payload, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public async Task OpenApiEndpoint_ShouldExposeStageTwoAdminEndpoints()
+    {
+        var payload = await _client.GetStringAsync("/openapi/v1.json");
+        Assert.Contains("/api/v1/admin/concepts", payload, StringComparison.Ordinal);
+        Assert.Contains("/api/v1/admin/revisions/{id}/approve", payload, StringComparison.Ordinal);
+        Assert.Contains("/api/v1/admin/sources", payload, StringComparison.Ordinal);
+        Assert.Contains("/api/v1/admin/import-jobs/csv", payload, StringComparison.Ordinal);
+    }
 }

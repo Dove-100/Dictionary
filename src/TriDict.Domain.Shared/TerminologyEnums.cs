@@ -27,3 +27,27 @@ public enum TermType
     Symbol = 4,
     Variant = 5
 }
+
+public enum ReviewAction
+{
+    Submitted = 0,
+    Approved = 1,
+    Rejected = 2,
+    Published = 3
+}
+
+public enum EvidenceType
+{
+    Term = 0,
+    Definition = 1,
+    Example = 2,
+    General = 3
+}
+
+public enum ImportStatus
+{
+    Pending = 0,
+    Validating = 1,
+    Completed = 2,
+    Failed = 3
+}

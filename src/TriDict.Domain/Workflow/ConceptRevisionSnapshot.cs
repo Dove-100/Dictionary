@@ -50,6 +50,12 @@ public sealed record ConceptRevisionSnapshot(
             throw new BusinessException("TriDict:MissingSource");
         }
 
+        if (Definitions.Any(definition => definition.SourceId.HasValue &&
+            !Sources.Any(source => source.SourceId == definition.SourceId.Value)))
+        {
+            throw new BusinessException("TriDict:DefinitionSourceNotLinked");
+        }
+
         var duplicatePreferred = Terms
             .Where(x => x.IsPreferred)
             .GroupBy(x => x.LanguageTag)

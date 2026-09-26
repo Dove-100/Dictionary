@@ -27,6 +27,8 @@ Published --创建修订--> 新的 Draft（旧版本继续公开）
 | 方法与地址 | 权限 | 作用 |
 |---|---|---|
 | `GET /api/v1/admin/concepts/{id}` | `TriDict.Concepts` | 查看概念和最新修订 |
+| `GET /api/v1/admin/concepts` | `TriDict.Concepts` | 分页查看概念，可按编码和最新修订状态筛选 |
+| `GET /api/v1/admin/concepts/domains` | `TriDict.Concepts` | 获取领域选项 |
 | `POST /api/v1/admin/concepts` | `TriDict.Concepts.Create` | 创建概念和版本 1 草稿 |
 | `POST /api/v1/admin/concepts/{id}/revisions` | `TriDict.Concepts.Edit` | 为已发布概念创建下一版本 |
 | `PUT /api/v1/admin/revisions/{id}` | `TriDict.Concepts.Edit` | 修改草稿完整快照 |
@@ -36,6 +38,7 @@ Published --创建修订--> 新的 Draft（旧版本继续公开）
 | `POST /api/v1/admin/revisions/{id}/publish` | `TriDict.Concepts.Publish` | 发布并替换公开投影 |
 | `GET/POST/PUT /api/v1/admin/sources` | `TriDict.Sources*` | 查询和维护来源 |
 | `PUT /api/v1/admin/sources/{id}/active` | `TriDict.Sources.Manage` | 启用/停用来源 |
+| `GET /api/v1/admin/import-jobs` | `TriDict.Imports.View` | 分页查看导入任务 |
 
 ## 4. 角色建议
 

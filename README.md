@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-第 2 阶段后端业务闭环已建立：在第 1 阶段技术底座上增加术语草稿编辑、版本化审核发布、来源证据管理、CSV 批量导入与逐行错误报告，并通过 Outbox 记录发布事件。
+第 2 阶段术语管理闭环已建立：术语草稿编辑、版本化审核发布、来源证据管理、CSV 批量导入与逐行错误报告，以及可运行的 Web 管理端页面。
 
 ## 本地开发
 
@@ -34,7 +34,8 @@ docker compose -f deploy/docker/compose.yml up --build
 - 来源管理：`GET http://localhost:8080/api/v1/admin/sources`
 - CSV 导入：`POST http://localhost:8080/api/v1/admin/import-jobs/csv`
 - OpenAPI：`GET http://localhost:8080/openapi/v1.json`
+- 管理端：`GET http://localhost:8080/admin/`
 
 数据库迁移由 `TriDict.DbMigrator` 独立执行，API 不会在启动时自动修改数据库结构。
 
-第二阶段的交付范围和新增文件职责见[第 2 阶段交付物索引](docs/phase-2/00-阶段2交付物索引.md)与[代码与文件职责说明](docs/phase-2/03-代码与文件职责说明.md)。
+管理端通过当前页面内存中的 Bearer 访问令牌调用 API；令牌由项目配置的 OIDC 身份服务提供。页面操作见[管理端页面使用说明](docs/phase-2/05-管理端页面使用说明.md)，新增文件职责见[代码与文件职责说明](docs/phase-2/03-代码与文件职责说明.md)。

@@ -54,6 +54,8 @@ public sealed class TriDictHttpApiHostModule : AbpModule
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
     {
         var app = context.GetApplicationBuilder();
+        app.UseDefaultFiles();
+        app.UseStaticFiles();
         app.UseRouting();
         app.UseCors();
         app.UseAuthentication();

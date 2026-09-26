@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TriDict.Permissions;
 using TriDict.Terminology;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.Application.Dtos;
 
 namespace TriDict.Controllers;
 
@@ -12,6 +13,15 @@ namespace TriDict.Controllers;
 [Route("api/v1/admin/concepts")]
 public sealed class AdminConceptsController(ITerminologyAdminAppService service) : AbpControllerBase
 {
+    [HttpGet]
+    [ProducesResponseType(typeof(PagedResultDto<ConceptAdminDto>), StatusCodes.Status200OK)]
+    public Task<PagedResultDto<ConceptAdminDto>> GetListAsync([FromQuery] ConceptListInput input, CancellationToken cancellationToken) =>
+        service.GetListAsync(input, cancellationToken);
+
+    [HttpGet("domains")]
+    public Task<List<DomainOptionDto>> GetDomainsAsync(CancellationToken cancellationToken) =>
+        service.GetDomainsAsync(cancellationToken);
+
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ConceptAdminDto), StatusCodes.Status200OK)]
     public Task<ConceptAdminDto> GetAsync(Guid id, CancellationToken cancellationToken) =>

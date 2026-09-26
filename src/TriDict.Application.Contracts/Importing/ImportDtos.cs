@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using TriDict.Terminology;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Application.Dtos;
 
 namespace TriDict.Importing;
 
@@ -36,5 +37,6 @@ public sealed class ImportJobDto
 public interface IImportAppService : IApplicationService
 {
     Task<ImportJobDto> ImportCsvAsync(CreateCsvImportInput input, CancellationToken cancellationToken = default);
+    Task<PagedResultDto<ImportJobDto>> GetListAsync(PagedResultRequestDto input, CancellationToken cancellationToken = default);
     Task<ImportJobDto> GetAsync(Guid id, CancellationToken cancellationToken = default);
 }

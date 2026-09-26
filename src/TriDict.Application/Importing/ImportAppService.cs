@@ -5,6 +5,7 @@ using TriDict.Terminology;
 using TriDict.Workflow;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 
@@ -64,8 +65,13 @@ public sealed class ImportAppService(
             return Map(job);
         }
 
-        var headers = records[0].Values.Select((name, index) => (name, index))
-            .ToDictionary(x => x.name, x => x.index, StringComparer.OrdinalIgnoreCase);
+        var headerGroups = records[0].Values.Select((name, index) => (name, index))
+            .GroupBy(x => x.name, StringComparer.OrdinalIgnoreCase).ToList();
+        foreach (var duplicate in headerGroups.Where(x => x.Count() > 1))
+        {
+            job.AddError(guidGenerator.Create(), 1, duplicate.Key, "DuplicateHeader", $"列名 {duplicate.Key} 重复。");
+        }
+        var headers = headerGroups.ToDictionary(x => x.Key, x => x.First().index, StringComparer.OrdinalIgnoreCase);
         foreach (var required in RequiredHeaders.Where(x => !headers.ContainsKey(x)))
         {
             job.AddError(guidGenerator.Create(), 1, required, "MissingHeader", $"缺少必填列 {required}。");
@@ -114,6 +120,23 @@ public sealed class ImportAppService(
             var sourceUrl = row.Optional("SourceUrl");
             var sourceIdentifier = row.Optional("SourceIdentifier");
 
+            row.CheckLength(job, guidGenerator, "ConceptCode", TriDictConsts.MaxCodeLength);
+            row.CheckLength(job, guidGenerator, "DomainCode", TriDictConsts.MaxCodeLength);
+            row.CheckLength(job, guidGenerator, "ZhTerm", TriDictConsts.MaxTermLength);
+            row.CheckLength(job, guidGenerator, "EsTerm", TriDictConsts.MaxTermLength);
+            row.CheckLength(job, guidGenerator, "EnTerm", TriDictConsts.MaxTermLength);
+            row.CheckLength(job, guidGenerator, "PartOfSpeech", 64);
+            row.CheckLength(job, guidGenerator, "UsageContext", TriDictConsts.MaxContextLength);
+            row.CheckLength(job, guidGenerator, "DefinitionZh", TriDictConsts.MaxDefinitionLength);
+            row.CheckLength(job, guidGenerator, "DefinitionEs", TriDictConsts.MaxDefinitionLength);
+            row.CheckLength(job, guidGenerator, "DefinitionEn", TriDictConsts.MaxDefinitionLength);
+            row.CheckLength(job, guidGenerator, "ScenarioLabel", TriDictConsts.MaxContextLength);
+            row.CheckLength(job, guidGenerator, "SourceTitle", TriDictConsts.MaxTitleLength);
+            row.CheckLength(job, guidGenerator, "SourceUrl", TriDictConsts.MaxUrlLength);
+            row.CheckLength(job, guidGenerator, "SourceIdentifier", 256);
+            row.CheckLength(job, guidGenerator, "SourceLicense", TriDictConsts.MaxLicenseLength);
+            row.CheckLength(job, guidGenerator, "SourceLocator", TriDictConsts.MaxContextLength);
+
             if (!int.TryParse(row.Required("SenseOrder", job, guidGenerator), out var senseOrder) || senseOrder < 0)
                 row.Error(job, guidGenerator, "SenseOrder", "InvalidNumber", "SenseOrder 必须为非负整数。");
             if (!domains.TryGetValue(domainCode, out var domain))
@@ -123,10 +146,19 @@ public sealed class ImportAppService(
                 row.Error(job, guidGenerator, "ConceptCode", "DuplicateConceptCode", "概念编码已存在或在文件中重复。");
             if (string.IsNullOrWhiteSpace(sourceUrl) && string.IsNullOrWhiteSpace(sourceIdentifier))
                 row.Error(job, guidGenerator, "SourceUrl", "MissingSourceIdentity", "SourceUrl 与 SourceIdentifier 至少填写一个。");
+            if (!string.IsNullOrWhiteSpace(sourceUrl) &&
+                (!Uri.TryCreate(sourceUrl, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https")))
+                row.Error(job, guidGenerator, "SourceUrl", "InvalidUrl", "SourceUrl 必须为 HTTP 或 HTTPS 地址。");
+
+            if (job.Errors.Count != errorCount) continue;
+            var sourceKey = SourceKey(sourceUrl, sourceIdentifier);
+            if (sourcesByKey.TryGetValue(sourceKey, out var existingSource) && !existingSource.IsActive)
+            {
+                row.Error(job, guidGenerator, "SourceUrl", "InactiveSource", "对应来源已停用，请先启用或更换来源。");
+            }
 
             if (job.Errors.Count != errorCount) continue;
 
-            var sourceKey = SourceKey(sourceUrl, sourceIdentifier);
             if (!sourcesByKey.TryGetValue(sourceKey, out var source))
             {
                 source = new Source(guidGenerator.Create(), sourceTitle, sourceLicense, url: sourceUrl, identifier: sourceIdentifier, accessedAt: DateTime.UtcNow);
@@ -152,6 +184,19 @@ public sealed class ImportAppService(
         job.Complete(dataRecords.Count, validRows);
         await importJobRepository.UpdateAsync(job, autoSave: true, cancellationToken);
         return Map(job);
+    }
+
+    [Authorize(TriDictPermissions.ImportsView)]
+    public async Task<PagedResultDto<ImportJobDto>> GetListAsync(PagedResultRequestDto input, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        var query = await importJobRepository.WithDetailsAsync(x => x.Errors);
+        var count = await AsyncExecuter.LongCountAsync(query, cancellationToken);
+        var jobs = await AsyncExecuter.ToListAsync(query
+            .OrderByDescending(x => x.CreationTime)
+            .Skip(input.SkipCount)
+            .Take(Math.Clamp(input.MaxResultCount, 1, 100)), cancellationToken);
+        return new PagedResultDto<ImportJobDto>(count, jobs.Select(Map).ToList());
     }
 
     [Authorize(TriDictPermissions.ImportsView)]
@@ -200,5 +245,11 @@ public sealed class ImportAppService(
 
         public void Error(ImportJob job, IGuidGenerator generator, string field, string code, string message) =>
             job.AddError(generator.Create(), record.RowNumber, field, code, message);
+
+        public void CheckLength(ImportJob job, IGuidGenerator generator, string field, int maxLength)
+        {
+            if (Optional(field) is { Length: var length } && length > maxLength)
+                Error(job, generator, field, "FieldTooLong", $"{field} 最多 {maxLength} 个字符。");
+        }
     }
 }

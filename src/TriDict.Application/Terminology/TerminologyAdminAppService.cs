@@ -4,6 +4,7 @@ using TriDict.Permissions;
 using TriDict.Workflow;
 using Volo.Abp;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 
@@ -20,13 +21,60 @@ public sealed class TerminologyAdminAppService(
     : ApplicationService, ITerminologyAdminAppService
 {
     [Authorize(TriDictPermissions.Concepts)]
+    public async Task<PagedResultDto<ConceptAdminDto>> GetListAsync(ConceptListInput input, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        var concepts = await conceptRepository.GetQueryableAsync();
+        var revisions = await revisionRepository.GetQueryableAsync();
+        var latest = revisions.Where(revision => !revisions.Any(other =>
+            other.ConceptId == revision.ConceptId && other.Version > revision.Version));
+        var query = from concept in concepts
+                    join revision in latest on concept.Id equals revision.ConceptId
+                    select new { concept, revision };
+        if (!string.IsNullOrWhiteSpace(input.Query))
+        {
+            var code = input.Query.Trim().ToUpperInvariant();
+            query = query.Where(x => x.concept.ConceptCode.Contains(code));
+        }
+        if (input.RevisionStatus is { } status)
+        {
+            query = query.Where(x => x.revision.Status == status);
+        }
+
+        var count = await AsyncExecuter.LongCountAsync(query, cancellationToken);
+        var page = await AsyncExecuter.ToListAsync(query
+            .OrderByDescending(x => x.revision.CreationTime)
+            .ThenBy(x => x.concept.ConceptCode)
+            .Skip(input.SkipCount)
+            .Take(Math.Clamp(input.MaxResultCount, 1, 100)), cancellationToken);
+        return new PagedResultDto<ConceptAdminDto>(count,
+            page.Select(x => Map(x.concept, x.revision)).ToList());
+    }
+
+    [Authorize(TriDictPermissions.Concepts)]
+    public async Task<List<DomainOptionDto>> GetDomainsAsync(CancellationToken cancellationToken = default)
+    {
+        var domains = await domainRepository.GetListAsync(includeDetails: false, cancellationToken);
+        return domains.OrderBy(x => x.Sort).ThenBy(x => x.Code)
+            .Select(x => new DomainOptionDto { Id = x.Id, Code = x.Code, NameZh = x.NameZh }).ToList();
+    }
+
+    [Authorize(TriDictPermissions.Concepts)]
     public async Task<ConceptAdminDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var concept = await RequireConceptAsync(id, cancellationToken);
         var query = await revisionRepository.GetQueryableAsync();
         var revision = await AsyncExecuter.FirstOrDefaultAsync(
             query.Where(x => x.ConceptId == id).OrderByDescending(x => x.Version), cancellationToken);
-        return Map(concept, revision);
+        ConceptRevision? published = null;
+        if (concept.CurrentVersion > 0)
+        {
+            published = await AsyncExecuter.FirstOrDefaultAsync(query.Where(x =>
+                x.ConceptId == id && x.Version == concept.CurrentVersion), cancellationToken);
+        }
+        var result = Map(concept, revision);
+        result.PublishedRevision = published is null ? null : Map(published);
+        return result;
     }
 
     [Authorize(TriDictPermissions.ConceptsCreate)]

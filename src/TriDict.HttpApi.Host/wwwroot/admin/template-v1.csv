@@ -1,0 +1,2 @@
+ConceptCode,DomainCode,ZhTerm,EsTerm,EnTerm,PartOfSpeech,SenseOrder,UsageContext,DefinitionZh,DefinitionEs,DefinitionEn,ScenarioLabel,SourceTitle,SourceUrl,SourceIdentifier,SourceLicense,SourceLocator
+IT-AI-001,IT,人工智能,inteligencia artificial,artificial intelligence,noun,1,信息技术,研究使计算机系统执行通常需要人类智能的任务的技术领域。,Campo de la informática que desarrolla sistemas capaces de realizar tareas asociadas con la inteligencia humana.,The field of computing that develops systems able to perform tasks associated with human intelligence.,信息技术,示例技术资料,https://example.org/ai-terms,,演示数据,第1节

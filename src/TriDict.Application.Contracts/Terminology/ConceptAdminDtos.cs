@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Volo.Abp.Application.Dtos;
 
 namespace TriDict.Terminology;
 
@@ -102,4 +103,24 @@ public sealed class ConceptAdminDto
     public PublicationStatus Status { get; set; }
     public int CurrentVersion { get; set; }
     public ConceptRevisionDto? ActiveRevision { get; set; }
+    public ConceptRevisionDto? PublishedRevision { get; set; }
+}
+
+public sealed class DomainOptionDto
+{
+    public Guid Id { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public string NameZh { get; set; } = string.Empty;
+}
+
+public sealed class ConceptListInput : PagedAndSortedResultRequestDto
+{
+    [StringLength(TriDictConsts.MaxCodeLength)]
+    public string? Query { get; set; }
+    public PublicationStatus? RevisionStatus { get; set; }
+
+    public ConceptListInput()
+    {
+        MaxResultCount = 20;
+    }
 }

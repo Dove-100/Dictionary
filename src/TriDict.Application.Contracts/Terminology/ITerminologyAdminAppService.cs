@@ -1,9 +1,12 @@
 using Volo.Abp.Application.Services;
+using Volo.Abp.Application.Dtos;
 
 namespace TriDict.Terminology;
 
 public interface ITerminologyAdminAppService : IApplicationService
 {
+    Task<PagedResultDto<ConceptAdminDto>> GetListAsync(ConceptListInput input, CancellationToken cancellationToken = default);
+    Task<List<DomainOptionDto>> GetDomainsAsync(CancellationToken cancellationToken = default);
     Task<ConceptAdminDto> GetAsync(Guid id, CancellationToken cancellationToken = default);
     Task<ConceptAdminDto> CreateDraftAsync(CreateConceptInput input, CancellationToken cancellationToken = default);
     Task<ConceptRevisionDto> UpdateDraftAsync(Guid revisionId, UpdateConceptDraftInput input, CancellationToken cancellationToken = default);

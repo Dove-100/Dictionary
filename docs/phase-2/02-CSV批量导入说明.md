@@ -31,10 +31,14 @@
 | 错误码 | 含义 |
 |---|---|
 | MissingHeader | 缺少模板必填列 |
+| DuplicateHeader | 模板列名重复 |
 | Required | 行内必填值为空 |
+| FieldTooLong | 字段超过长度限制 |
 | InvalidNumber | SenseOrder 不是非负整数 |
 | UnknownDomain | 领域编码不存在 |
 | DuplicateConceptCode | 编码已存在或在当前文件重复 |
 | MissingSourceIdentity | URL 和持久标识均为空 |
+| InvalidUrl | 来源 URL 不是 HTTP/HTTPS 地址 |
+| InactiveSource | 对应来源已停用 |
 
 对于同形多义词，应按义项建立不同 `ConceptCode`，并分别填写 `SenseOrder`、`UsageContext`、`ScenarioLabel` 和定义，避免把金融、医学、法律等场景压成一个含混词条。

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="言桥术语管理端：术语编辑、审核与批量导入">
+  <title>言桥术语 · 术语运营台</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主内容</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="管理导航">
+      <a class="brand" href="#editor" aria-label="言桥术语管理端首页">
+        <span class="brand-mark" aria-hidden="true">言</span>
+        <span class="brand-text"><strong>言桥术语</strong><small>术语运营台 / TERMINOLOGY DESK</small></span>
+      </a>
+      <div class="workspace-label">工作空间 <span>01</span></div>
+      <nav class="side-nav" aria-label="主要页面">
+        <a href="#editor" data-route="editor"><span class="nav-icon" aria-hidden="true">▤</span><span>术语编辑</span><small>01</small></a>
+        <a href="#review" data-route="review"><span class="nav-icon" aria-hidden="true">◇</span><span>审核差异</span><small>02</small></a>
+        <a href="#imports" data-route="imports"><span class="nav-icon" aria-hidden="true">↥</span><span>导入结果</span><small>03</small></a>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="status-orb" aria-hidden="true"></div>
+        <div><strong>数据治理工作台</strong><span>每个概念，一份可靠解释</span></div>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="breadcrumb"><span>言桥术语</span><span class="slash">/</span><strong id="breadcrumb-current">术语编辑</strong></div>
+        <div class="top-actions">
+          <span class="environment-tag">管理端 · BETA</span>
+          <button class="connection-button" type="button" id="connection-button"><span class="connection-dot"></span><span id="connection-label">连接 API</span></button>
+        </div>
+      </header>
+      <div class="connection-notice" id="connection-notice" role="status">
+        <span class="notice-icon" aria-hidden="true">i</span>
+        <span>连接到已配置的身份服务后，输入访问令牌即可读取并编辑术语。令牌仅保存在当前页面内存中。</span>
+        <button type="button" id="notice-connect">连接</button>
+      </div>
+      <main id="main">
+        <section id="editor-view" class="page" aria-labelledby="editor-title"></section>
+        <section id="review-view" class="page" aria-labelledby="review-title" hidden></section>
+        <section id="imports-view" class="page" aria-labelledby="imports-title" hidden></section>
+      </main>
+      <footer class="app-footer"><span>言桥术语 · 汉 / 西 / 英专业术语库</span><span>词条发布前均经过来源校验与审核</span></footer>
+    </div>
+  </div>
+
+  <dialog id="connection-dialog" class="modal">
+    <form method="dialog" id="connection-form">
+      <div class="modal-head"><span class="eyebrow">安全连接</span><button type="button" class="icon-button" data-close-dialog aria-label="关闭">×</button></div>
+      <h2>连接管理 API</h2>
+      <p>请从项目配置的身份服务获取访问令牌。管理操作仍由服务端权限控制。</p>
+      <label for="access-token">访问令牌</label>
+      <textarea id="access-token" rows="5" autocomplete="off" spellcheck="false" placeholder="粘贴 Bearer access token"></textarea>
+      <div class="modal-actions"><button type="button" class="button ghost" data-close-dialog>取消</button><button class="button primary" value="connect">连接并加载</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="source-dialog" class="modal">
+    <form method="dialog" id="source-form">
+      <div class="modal-head"><span class="eyebrow">来源管理</span><button type="button" class="icon-button" data-close-dialog aria-label="关闭">×</button></div>
+      <h2>添加术语来源</h2>
+      <p>来源需要标题、许可证，以及 URL 或持久标识中的至少一项。</p>
+      <div class="modal-grid">
+        <label>来源标题 <input name="title" required maxlength="512" placeholder="例如 ISO 术语标准"></label>
+        <label>许可证 / 使用依据 <input name="license" required maxlength="256" placeholder="例如 CC BY 4.0"></label>
+        <label>URL <input name="url" type="url" maxlength="2048" placeholder="https://…"></label>
+        <label>持久标识 <input name="identifier" maxlength="256" placeholder="DOI / ISBN / 标准号"></label>
+        <label>作者 <input name="author" maxlength="256"></label>
+        <label>出版机构 <input name="publisher" maxlength="256"></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="button ghost" data-close-dialog>取消</button><button class="button primary" value="save">保存来源</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

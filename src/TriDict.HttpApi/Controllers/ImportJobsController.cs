@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using TriDict.Importing;
 using TriDict.Permissions;
 using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp.Application.Dtos;
 
 namespace TriDict.Controllers;
 
@@ -13,6 +14,11 @@ namespace TriDict.Controllers;
 [Route("api/v1/admin/import-jobs")]
 public sealed class ImportJobsController(IImportAppService service) : AbpControllerBase
 {
+    [HttpGet]
+    [Authorize(TriDictPermissions.ImportsView)]
+    public Task<PagedResultDto<ImportJobDto>> GetListAsync([FromQuery] PagedResultRequestDto input, CancellationToken cancellationToken) =>
+        service.GetListAsync(input, cancellationToken);
+
     [HttpPost("csv")]
     [Authorize(TriDictPermissions.ImportsExecute)]
     [RequestSizeLimit(ImportAppServiceLimits.MaxRequestBytes)]

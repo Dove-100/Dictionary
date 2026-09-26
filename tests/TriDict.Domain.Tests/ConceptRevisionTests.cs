@@ -50,6 +50,20 @@ public sealed class ConceptRevisionTests
         Assert.Contains(revision.GetSnapshot().Definitions, x => x.ScenarioLabel == "地理");
     }
 
+    [Fact]
+    public void Submit_ShouldRequireDefinitionSourceToBeLinkedToConcept()
+    {
+        var snapshot = CompleteSnapshot() with
+        {
+            Definitions = [new DefinitionSnapshot("zh-Hans", "测试定义。", "科研", Guid.NewGuid())]
+        };
+        var revision = new ConceptRevision(Guid.NewGuid(), Guid.NewGuid(), 1, snapshot, "更新定义来源", Guid.NewGuid());
+
+        var exception = Assert.Throws<BusinessException>(() => revision.Submit(Guid.NewGuid()));
+
+        Assert.Equal("TriDict:DefinitionSourceNotLinked", exception.Code);
+    }
+
     private static ConceptRevisionSnapshot CompleteSnapshot() => new(
         Guid.NewGuid(),
         ReliabilityCode.Unverified,
